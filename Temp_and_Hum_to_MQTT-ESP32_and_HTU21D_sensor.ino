@@ -1,32 +1,29 @@
 /******************************************************************************************************
  * This program was written with the intent to measure temperature and humidity using an Espresif ESP32,
- * a DHT Temperature and Humidity sensor, and a power supply set to 3.3V. The program sends data to
+ * a HTU21D Temperature and Humidity sensor, and a power supply set to 3.3V. The program sends data to
  * the serial monitor and an MQTT server using specific topics. In this case the MQTT server is setup
  * on a raspberry pi or Linux PC. 
  * 
  * Parts needed for this program:
- * -Esp32 Dev Module (https://www.amazon.com/gp/product/B07Q576VWZ/ref=ppx_yo_dt_b_asin_title_o06_s01?ie=UTF8&psc=1)
- * -DHT11 or DHT22 Temp and Hum Sensor
- * -7-12VDC to 3.3/5V power supply with both jumpers set to "3.3V"
- * -1k Ohm Resistor(Brown/Black/Red)
- * -Yellow LED
- * -6 male to male jumper wires
+ * -ESP32 DevKit V1 Module
+ * -HTU21D Temp and Hum Sensor
+ * -7-12VDC to 3.3/5V power supply with both jumpers set to "3.3V" or a mirco USB cable with a 1A or higher power adapter.
+ * -3 male to male jumper wires
  * -1 mini(400 pin solderless) bread board
- * -7-12VDC Power supply
  * 
- * Wiring (Refers to the position on the breadboard(Rows(1-30) and Columns(a-j, +, -))):
- * ESP32 pressed into column a and i rows 16-30
- * DHT pressed into column j rows 10-12
- * Power supply pressed into (+) and (-) on both sides, rows 1-5
- * Long side of the LED pressed into b13
- * Short side of the LED pressed into b10
- * One side of the resistor pressed into a10 and the other side pressed into (-)
- * Jumper wire from (+) to j30(Pin 3V3 on the ESP32)
- * Jumper wire from (-) to j29(Pin GND on the ESP32)
- * Jumper wire from f10(DHT(-)) to (-)
- * Jumper wire from f11(DHT('out") to j21(Pin D19 on ESP32)
- * Jumper wire from f12(DHT(+)) to (+)
- * Jumper wire from e13 to j23(Pin D5 on the ESP32)
+ * Wiring up the project:
+ * Note: The bread board rows are shorted together on the right and left sides. The right and left sides of the bread board are not shorted together.
+ * ESP32 pressed into the bread board.
+ * DHT pressed into the breadboard.
+ * Power supply pressed into the (+) and (-) of the bread board. Note: If the power supply if connected on the "bottom" of the bread board, the polarity marked on the bread board will be incorrect.
+ * If using the power supply to power the project:
+ *   Jumper wire from (+) on the breadboard to the pin labeled VIN on the ESP32.
+ *   Jumper wire from (-) on the breadboard to the pin labeled GND on the ESP32.
+ * If using a USB cable to power the project:
+ *   Jumper wire from the pin labeled 3V3 to "+" on the HTU sensor.
+ *   Jumper wire from the pin lebeled GND to "-" on the HTU sensor.
+ * Jumper wire from the pin labeled D21(SDA) on ESP to DA on the HTU sensor.
+ * Jumper wire from the pin labeled D22(SCL) on ESP to CL on the HTU sensor.
 ***************************************************************************************************/
 #include <WiFi.h>
 #include <PubSubClient.h>//For sending data to MQTT Server
@@ -36,24 +33,23 @@
 //*****+*+*+*+*+*+*+*+*+*+**************************************************+*+*+*+*+*+*+*+*+*+*****
 //*****+*+*+*+*+*+*+*+*+*+*****************Things to modify*****************+*+*+*+*+*+*+*+*+*+*****
 //*****+*+*+*+*+*+*+*+*+*+**************************************************+*+*+*+*+*+*+*+*+*+*****
-const char* ssid = "<WiFi SSID>";//**********WiFi SSID**********
-const char* password =  "WiFi Password";//**********SSID Password**********
-const char* mqttUser = "mqttuser";
-const char* mqttPassword = "";
-const char* mqtt_server = "<MQTT Server IP Address>";
-const int mqttPort = 1883; // Default Port Number
-const char* mqttClientID = "ESP32ClientExtraRoom"; // Can be anything
-WiFiClient espClientExtraRoom;//**********This is the name of the specific ESP32**********
-PubSubClient client(espClientExtraRoom);//**********This is the name of the specific ESP32**********
-const char* topicPrefix = "<topic1/topic2>";//This is specifically for apt/room or area name/xxxxx
-const char* topicRoom = "<Topic name/room>";
-//int delayTime = 4901;//This is adjusted so a cycle happens every 5 seconds(5000 ms)
-int delayTime = 59901;//This is adjusted so a cycle happens every 60 seconds(60000 ms)
-IPAddress local_IP(<ESP32 IP Address (Can be any available address on your network)>);
-IPAddress gateway(<IP Address of your router/Modem/WiFi SSID>);
-IPAddress subnet(<Subnet (Typically 255.255.255.0)>);
-IPAddress dns1(75,75,75,75);//dns1 and dns2 are needed to get local time
-IPAddress dns2(75,75,76,76);//dns1 and dns2 are needed to get local time
+const char* ssid = "<Your network SSID>"; //********** WiFi SSID **********
+const char* password =  "<Your network password>"; //********** SSID Password **********
+const char* mqttUser = "<Your MQTT username>";
+const char* mqttPassword = "<Your MQTT password>";
+const char* mqtt_server = "<Your MQTT server IP Address>";
+const int mqttPort = 1883;
+const char* mqttClientID = "ESP32Client";
+WiFiClient espClient; //********** This is the name of the specific ESP32 **********
+PubSubClient client(espClient); //********** This is the name of the specific ESP32 **********
+const char* topicPrefix = "topic1/topic2"; // This is specifically for home/room or area name/xxxxx
+const char* topicRoom = "topic2";
+int delayTime = 59901; // This is adjusted so a cycle happens every 60 seconds(60000 ms)
+IPAddress local_IP(<IP Address of the ESP32>); // Can be any IP Address that is available and allowed on your network (comma seperated values).
+IPAddress gateway(<IP Address of your gateway>); // Typically the IP Address of your router/modem (comma seperated values).
+IPAddress subnet(<IP Address of your subnet>); // Typically 255,255,255,0 (comma seperated values)
+IPAddress dns1(75,75,75,75); // dns1 and dns2 are needed to get local time.
+IPAddress dns2(75,75,76,76); // dns1 and dns2 are needed to get local time.
 //*****+*+*+*+*+*+*+*+*+*+**************************************************+*+*+*+*+*+*+*+*+*+*****
 //*****+*+*+*+*+*+*+*+*+*+*************End of things to modify**************+*+*+*+*+*+*+*+*+*+*****
 //*****+*+*+*+*+*+*+*+*+*+**************************************************+*+*+*+*+*+*+*+*+*+*****
