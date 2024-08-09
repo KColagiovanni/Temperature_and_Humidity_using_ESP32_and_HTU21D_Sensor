@@ -12,9 +12,9 @@
  * -1 mini(400 pin solderless) bread board
  * 
  * Wiring up the project:
- * Note: The bread board rows are shorted together on the right and left sides. The right and left sides of the bread board are not shorted together.
+ * Note: The bread board rows are shorted together on the right(columns a-e) and left(columns f-j) sides. The right and left sides of the bread board are not shorted together.
  * ESP32 pressed into the bread board.
- * DHT pressed into the breadboard.
+ * HTU21D pressed into the breadboard.
  * Power supply pressed into the (+) and (-) of the bread board. Note: If the power supply if connected on the "bottom" of the bread board, the polarity marked on the bread board will be incorrect.
  * If using the power supply to power the project:
  *   Jumper wire from (+) on the breadboard to the pin labeled VIN on the ESP32.
