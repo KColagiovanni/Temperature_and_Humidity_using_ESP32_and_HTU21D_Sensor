@@ -70,7 +70,7 @@ double minHToday = 100;
 double minRssi = -100;
 const double t = 5.00;//5.00 is the approximate time it takes for one loop to interate
 int WiFiLed = 2;//**********Pin 2 is the on board blue LED**********
-int mqttLed = 5;//**********This is the pin that the LED is connected to()**********
+int mqttLed = 5;//**********This is the pin that the LED is connected to(Optional, not currently used)**********
 long lastMsg = 0;
 byte mac[6];
 char msgTopic[100], msgPayload[100];
@@ -108,9 +108,7 @@ char hourString[4];
 // HTU21D htu;
 Adafruit_HTU21DF htu = Adafruit_HTU21DF();
 
-//**************************************
-//*********Checking WiFi status*********
-//**************************************
+// Checking WiFi status. If status is not connected, try to reconnect until a connection is established.
 void checkingWifi()
 {
   pinMode(WiFiLed, OUTPUT);
@@ -128,7 +126,7 @@ void checkingWifi()
     for (int i = 0; i < 20; i++)
     {
       WiFi.begin(ssid, password);
-      delay(1000);//*************************Delay*************************
+      delay(1000); // Wait 1 second and try again.
       Serial.print(".");
       if(WiFi.status() == WL_CONNECTED)
       {
@@ -141,7 +139,7 @@ void checkingWifi()
     }
     if(WiFi.status() == WL_CONNECTED)
     {
-      // digitalWrite(WiFiLed, HIGH);
+      // digitalWrite(WiFiLed, HIGH); (Optional, this turns on the blue on board LED when WiFi is connected.
       Serial.print("\tConnected to ");
       Serial.print(ssid);
       Serial.print(" @ ");
@@ -153,9 +151,7 @@ void checkingWifi()
   }
 }
 
-//**************************************
-//*********Checking MQTT status*********
-//**************************************
+// Checking WiFi status. If status is not connected, try to reconnect until a connection is established.
 void checkingMqtt()
 {  
   pinMode(mqttLed, OUTPUT);
@@ -167,7 +163,7 @@ void checkingMqtt()
     Serial.print("Connecting to MQTT");
     for (int i = 0; i < 20; i++)
     {
-      delay(1000);//*************************Delay*************************
+      delay(1000); // Wait 1 second and try again.
       Serial.print(".");
       client.connect(mqttClientID, mqttUser, mqttPassword, "apt/patio/lastWill", 0, 1, "I'm dying!!", true);
       if(client.connected())
@@ -185,9 +181,7 @@ void checkingMqtt()
    }
 }
 
-//*****************************************
-//**********Printing MAC Address***********
-//*****************************************
+// Printing MAC Address to console.
 void printEspInfo()
 {
   WiFi.macAddress(mac);
@@ -205,9 +199,7 @@ void printEspInfo()
   Serial.println(mac[0],HEX);
 }
 
-//*********************************************************************************
-//****************Printing to serial Topic Prefix (ex. apt/xxxxx)******************
-//*********************************************************************************
+// Printing the topic prefix (ex. home/room) to console 
 void printPrefix()
 {   
   const char* specificMsgTopic = "/message";
@@ -221,9 +213,7 @@ void printPrefix()
   Serial.println(msgPayload);
 }
 
-//***********************************************************************************************
-//**************************Printing to serial the number of data points*************************
-//***********************************************************************************************
+// Calculating the number of data points that have been taken since the begining.
 void printLoopCounter()
 {
   loopCounter++;
@@ -235,9 +225,7 @@ void printLoopCounter()
   Serial.println(loopString);
 }  
 
-//********************************************************************************
-//**************Printing to serial and sending to MQTT a Timestamp****************
-//********************************************************************************
+// Getting the curent day of the week, the current date, and the current time of day.
 void printLocalTime()
 {
   const char* specificWDayTopic = "/day";
@@ -360,9 +348,7 @@ void printLocalTime()
   Serial.println(timeStamp);
 }
 
-//********************************************************************************
-//******************Printing to serial Temperature in Farenheit*******************
-//********************************************************************************
+// Reading the temperature from the sensor, then returning it in Farenheit.
 double printTemp()
 {
   const char* specificTempTopic = "/temp";
@@ -388,9 +374,7 @@ double printTemp()
   }
 }
 
-//************************************************************************************
-//******************Printing to serial Avg Temperature in Farenheit*******************
-//************************************************************************************
+// Calaulating the average temperature, in Farenheit.
 void avgTemp(double f)
 {
   if (!isnan(f) || tempString == "nan")
@@ -415,9 +399,7 @@ void avgTemp(double f)
   }
 }
 
-//************************************************************************************
-//******************Printing to serial Max Temperature in Farenheit*******************
-//************************************************************************************
+// Calculating the max temperature, in Farenheit.
 void calcMaxTemp(double f)
 {
   const char* specificTempTopic = "/maxTemp";
@@ -430,9 +412,7 @@ void calcMaxTemp(double f)
   Serial.print("*F\t\t");
 }
 
-//******************************************************************************************
-//******************Printing to serial Daily Max Temperature in Farenheit*******************
-//******************************************************************************************
+// Calculating the the max temperature, in Farenheit, of the current day.
 void calcMaxTempToday(double f)
 {
   const char* specificTempTopic = "/maxTempToday";
@@ -449,9 +429,7 @@ void calcMaxTempToday(double f)
   Serial.print("*F\t");
 }
 
-//************************************************************************************
-//******************Printing to serial Min Temperature in Farenheit*******************
-//************************************************************************************
+// Calculating the min temperature, in Farenheit.
 void calcMinTemp(double f)
 {
   if(f != 0)
@@ -467,9 +445,7 @@ void calcMinTemp(double f)
   }
 }
 
-//******************************************************************************************
-//******************Printing to serial Daily Min Temperature in Farenheit*******************
-//******************************************************************************************
+// Calculating the the min temperature, in Farenheit, of the current day.
 void calcMinTempToday(double f)
 {
   const char* specificTempTopic = "/minTempToday";
@@ -486,9 +462,7 @@ void calcMinTempToday(double f)
   Serial.print("*F\t");
 }
 
-//********************************************************************************
-//********************Printing to serial Humidity in Percent**********************
-//********************************************************************************
+// Reading the humidity percent from the sensor.
 double printHum()
 {
   const char* specificHumTopic = "/hum";
@@ -509,9 +483,7 @@ double printHum()
   }
 }
 
-//************************************************************************************
-//********************Printing to serial Avg Humidity in Percent**********************
-//************************************************************************************
+// Calculating the average humidityt percent.
 void avgHum(double h)
 {
   if (!isnan(h) || humString == "nan")
@@ -536,9 +508,7 @@ void avgHum(double h)
   }
 }
 
-//************************************************************************************
-//********************Printing to serial Max Humidity in Percent**********************
-//************************************************************************************
+// Calculating the max humidity percent.
 void calcMaxHum(double h)
 {
   const char* specificHumTopic = "/maxHum";
@@ -551,9 +521,7 @@ void calcMaxHum(double h)
   Serial.println("%");
 }
 
-//*************************************************************************************
-//******************Printing to serial Daily Max Humidity in Percent*******************
-//*************************************************************************************
+// Calculating the the max humidity percent of the current day.
 void calcMaxHumToday(double h)
 {
   const char* specificHumTopic = "/maxHumToday";
@@ -570,9 +538,7 @@ void calcMaxHumToday(double h)
   Serial.println("%");
 }
 
-//************************************************************************************
-//********************Printing to serial Min Humidity in Percent**********************
-//************************************************************************************
+// Calculating the the min humidity percent.
 void calcMinHum(double h)
 {
   const char* specificHumTopic = "/minHum";
@@ -585,9 +551,7 @@ void calcMinHum(double h)
   Serial.println("%");
 }
 
-//*************************************************************************************
-//******************Printing to serial Daily Min Humidity in Percent*******************
-//*************************************************************************************
+// Calculating the the max humidity percent of the current day.
 void calcMinHumToday(double h)
 {
   const char* specificHumTopic = "/minHumToday";
@@ -604,9 +568,7 @@ void calcMinHumToday(double h)
   Serial.println("%");
 }
 
-//********************************************************************************
-//******************Printing to serial and sending to MQTT RSSI*******************
-//********************************************************************************
+// Reading the current RSSI.
 double printRssi()
 {
   const char* specificRssiTopic = "/rssi";
@@ -620,9 +582,7 @@ double printRssi()
   return rssi;
 }
 
-//****************************************************************************************************
-//***********************Printing to serial and sending to MQTT Avg RSSI in dBm***********************
-//****************************************************************************************************
+// Calculating the average RSSI.
 void calcAvgRssi(int rssi)
 {
   if (!isnan(rssi) || rssiString == "nan")
@@ -647,9 +607,7 @@ void calcAvgRssi(int rssi)
   }
 }
 
-//*******************************************************************************************
-//******************Printing to serial and sending to MQTT Max RSSI in dBm*******************
-//*******************************************************************************************
+// Calculating the max RSSI.
 void calcMaxRssi(double rssi)
 {
   const char* specificMaxRssiTopic = "/maxRssi";
@@ -662,9 +620,7 @@ void calcMaxRssi(double rssi)
   Serial.println("dBm");  
 }
 
-//*************************************************************************************************
-//***********************Printing to serial and sending to MQTT Min RSSI dBm***********************
-//*************************************************************************************************
+// Calculating the the min RSSI.
 void calcMinRssi(double rssi)
 {
   if(rssi != 0)
@@ -680,9 +636,7 @@ void calcMinRssi(double rssi)
   }
 }
 
-//*******************************************************************************************
-//*******************************Printing to serial elapsed time*****************************
-//*******************************************************************************************
+// Calculating the elapsed time since data started to be taken.
 void printElapsedTime()
 {
   s = millis();
@@ -736,9 +690,7 @@ void printElapsedTime()
   Serial.println(elapsedTimeString);
 }
 
-//***************************************************
-//********Publishing data to the MQTT Server*********
-//***************************************************
+// Publishing data to the MQTT server.
 void publishToMqtt()
 {
   client.publish(msgTopic, msgPayload);//client.publish(const char[], const char[])
@@ -770,9 +722,7 @@ void publishToMqtt()
   client.loop();  //Running the PubSub Loop
 }
 
-//*******************************************
-//********Printing MQTT Server State*********
-//*******************************************
+// Reading the current MQTT Server State
 void printState()
 {
   Serial.print("The current state of the MQTT Client is: ");
@@ -812,9 +762,7 @@ void printState()
   }
 }
 
-//*********************************************************************************************
-//****************Printing to serial how many times wifiConnected has happened*****************
-//*********************************************************************************************
+// Keeping track of how many times wifiConnected has happened.
 void printWifiConnected()
 {
   const char* specificWifiConTopic = "/wifiCon";
@@ -833,9 +781,7 @@ void printWifiConnected()
   }
 }
 
-//*************************************************************************************************
-//*****************Printing to serial how many times wifiDisconnected has happened*****************
-//*************************************************************************************************
+// Keeping track of how many times wifiDisconnected has happened.
 void printWifiDisconnected()
 {
   const char* specificWifiDisTopic = "/wifiDiscon";
@@ -854,9 +800,7 @@ void printWifiDisconnected()
   }
 }
 
-//*********************************************************************************************
-//****************Printing to serial how many times mqttConnected has happened*****************
-//*********************************************************************************************
+// Keeping track of how many times mqttConnected has happened.
 void printMqttConnected()
 {
   const char* specificMqttConTopic = "/mqttCon";
@@ -875,9 +819,7 @@ void printMqttConnected()
   }
 }
 
-//*************************************************************************************************
-//*****************Printing to serial how many times mqttDisconnected has happened*****************
-//*************************************************************************************************
+// Keeping track of how many times mqttDisconnected has happened.
 void printMqttDisconnected()
 {
   const char* specificMqttDisTopic = "/mqttDiscon";
@@ -896,6 +838,7 @@ void printMqttDisconnected()
   }
 }
 
+// The setup function, start serial, htu temp/humidity sensor, and print the device MAC address.
 void setup()
 {
   Serial.begin(115200);
@@ -903,6 +846,7 @@ void setup()
   printEspInfo();
 }
 
+// The loop function checks WiFi connection, MQTT connection, and calls the temp, humidity, RSSI, some time realated functions, and a loop counter.
 void loop()
 {
   checkingWifi();
