@@ -24,6 +24,10 @@
  *   Jumper wire from the pin lebeled GND to "-" on the HTU sensor.
  * Jumper wire from the pin labeled D21(SDA) on ESP to DA on the HTU sensor.
  * Jumper wire from the pin labeled D22(SCL) on ESP to CL on the HTU sensor.
+ * If using an LED to show when MQTT is connected:
+ *   The long side of the LED goes to GPIO 5 of the ESP32.
+ *   Connect the short side of the LED to one leg of the 1K Ohm resistor (both connected to the same row in the breadboard).
+ *   Connect the other leg of the resistor to ground(or "-" of the power supply).
 ***************************************************************************************************/
 #include <WiFi.h>
 #include <PubSubClient.h>//For sending data to MQTT Server
@@ -70,7 +74,7 @@ double minHToday = 100;
 double minRssi = -100;
 const double t = 5.00;//5.00 is the approximate time it takes for one loop to interate
 int WiFiLed = 2;//**********Pin 2 is the on board blue LED**********
-int mqttLed = 5;//**********This is the pin that the LED is connected to(Optional, not currently used)**********
+int mqttLed = 5;//**********This is the pin(GPIO 5) that the LED is connected to(Optional, not currently used)**********
 long lastMsg = 0;
 byte mac[6];
 char msgTopic[100], msgPayload[100];
@@ -154,8 +158,8 @@ void checkingWifi()
 // Checking WiFi status. If status is not connected, try to reconnect until a connection is established.
 void checkingMqtt()
 {  
-  pinMode(mqttLed, OUTPUT);
-  client.setServer(mqtt_server, mqttPort);//configure the MQTT server with IPaddress and port
+  pinMode(mqttLed, OUTPUT); // Optional LED to turn on when MQTT is connected.
+  client.setServer(mqtt_server, mqttPort);//configure the MQTT server with IPaddress and port.
   while(!client.connected())
   {
     mqttDisconnected++;
@@ -175,7 +179,7 @@ void checkingMqtt()
     {
       Serial.print("\tConnected to MQTT server @ ");
       Serial.println(mqtt_server);
-      // digitalWrite(mqttLed, HIGH);
+      // digitalWrite(mqttLed, HIGH); // Optional LED to turn on when MQTT is connected.
       mqttConnected++;      
     }
    }
