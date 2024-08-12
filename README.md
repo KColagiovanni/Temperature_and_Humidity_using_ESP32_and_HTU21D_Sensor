@@ -18,12 +18,16 @@ Assistant.
   * Note: The bread board rows are shorted together on the right(columns a-e) and left(columns f-j) sides.
   * ESP32 pressed into the bread board.
   * HTU21D pressed into the breadboard with all of the pins in the same column.
-  * Power supply pressed into the (+) and (-) of the bread board. Note: If the power supply if connected on the "bottom" of the bread board, the polarity marked on the bread board will be incorrect.
+     * Jumper wire from the pin labeled D21(SDA) on ESP to DA on the HTU sensor.
+     * Jumper wire from the pin labeled D22(SCL) on ESP to CL on the HTU sensor.
   * If using the power supply to power the project:
-  *   Jumper wire from (+) on the breadboard to the pin labeled VIN on the ESP32.
-  *   Jumper wire from (-) on the breadboard to the pin labeled GND on the ESP32.
+     * Power supply pressed into the (+) and (-) of the bread board. Note: If the power supply if connected on the "bottom" of the bread board, the polarity marked on the bread board will be incorrect.
+     * Jumper wire from (+) on the breadboard to the pin labeled VIN on the ESP32.
+     * Jumper wire from (-) on the breadboard to the pin labeled GND on the ESP32.
   * If using a USB cable to power the project:
-  *   Jumper wire from the pin labeled 3V3 to "+" on the HTU sensor.
-  *   Jumper wire from the pin lebeled GND to "-" on the HTU sensor.
-  * Jumper wire from the pin labeled D21(SDA) on ESP to DA on the HTU sensor.
-  * Jumper wire from the pin labeled D22(SCL) on ESP to CL on the HTU sensor.
+     * Jumper wire from the pin labeled 3V3 to "+" on the HTU sensor.
+     * Jumper wire from the pin lebeled GND to "-" on the HTU sensor.
+  * [Optional] If using an LED to show when MQTT is connected:
+     * The long side of the LED goes to GPIO 5 of the ESP32.
+     * Connect the short side of the LED to one leg of the 1K Ohm resistor (both connected to the same row in the breadboard (Columns a-e or f-j)).
+     * Connect the other leg of the resistor to ground(or "-" of the power supply).
