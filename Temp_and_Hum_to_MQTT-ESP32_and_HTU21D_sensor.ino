@@ -8,7 +8,7 @@
  * -ESP32 DevKit V1 Module
  * -HTU21D Temp and Hum Sensor
  * -7-12VDC to 3.3/5V power supply with both jumpers set to "3.3V" or a mirco USB cable with a 1A or higher power adapter.
- * -3 male to male jumper wires
+ * -4 male to male jumper wires
  * -1 mini(400 pin solderless) bread board
  * 
  * Wiring up the project:
