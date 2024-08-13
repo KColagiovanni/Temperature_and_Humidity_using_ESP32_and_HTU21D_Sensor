@@ -109,7 +109,6 @@ const int   daylightOffset_sec = 0;
 char minString[4];
 char hourString[4];
 
-// HTU21D htu;
 Adafruit_HTU21DF htu = Adafruit_HTU21DF();
 
 // Checking WiFi status. If status is not connected, try to reconnect until a connection is established.
@@ -487,7 +486,7 @@ double printHum()
   }
 }
 
-// Calculating the average humidityt percent.
+// Calculating the average humidity percent.
 void avgHum(double h)
 {
   if (!isnan(h) || humString == "nan")
@@ -886,6 +885,5 @@ void loop()
   printMqttDisconnected();
   publishToMqtt();
   printState();
-    
   delay(delayTime);
 }
