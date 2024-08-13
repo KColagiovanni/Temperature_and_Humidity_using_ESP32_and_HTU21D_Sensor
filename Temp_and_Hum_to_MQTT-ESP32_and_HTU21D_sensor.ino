@@ -19,9 +19,8 @@
  * If using the power supply to power the project:
  *   Jumper wire from (+) on the breadboard to the pin labeled VIN on the ESP32.
  *   Jumper wire from (-) on the breadboard to the pin labeled GND on the ESP32.
- * If using a USB cable to power the project:
- *   Jumper wire from the pin labeled 3V3 to "+" on the HTU sensor.
- *   Jumper wire from the pin lebeled GND to "-" on the HTU sensor.
+ * Jumper wire from the pin labeled 3V3 to "+" on the HTU sensor.
+ * Jumper wire from the pin lebeled GND to "-" on the HTU sensor.
  * Jumper wire from the pin labeled D21(SDA) on ESP to DA on the HTU sensor.
  * Jumper wire from the pin labeled D22(SCL) on ESP to CL on the HTU sensor.
  * If using an LED to show when MQTT is connected:
