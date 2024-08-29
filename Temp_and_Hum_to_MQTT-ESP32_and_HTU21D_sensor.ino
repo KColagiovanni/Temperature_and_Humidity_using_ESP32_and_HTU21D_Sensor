@@ -1,32 +1,5 @@
-/******************************************************************************************************
- * This program was written with the intent to measure temperature and humidity using an Espresif ESP32,
- * a HTU21D Temperature and Humidity sensor, and a power supply set to 3.3V. The program sends data to
- * the serial monitor and an MQTT server using specific topics. In this case the MQTT server is setup
- * on a raspberry pi or Linux PC. 
- * 
- * Parts needed for this program:
- * -ESP32 DevKit V1 Module
- * -HTU21D Temp and Hum Sensor
- * -7-12VDC to 3.3/5V power supply with both jumpers set to "3.3V" or a mirco USB cable with a 1A or higher power adapter.
- * -4 male to male jumper wires
- * -1 mini(400 pin solderless) bread board
- * 
- * Wiring up the project:
- * Note: The bread board rows are shorted together on the right(columns a-e) and left(columns f-j) sides. The right and left sides of the bread board are not shorted together.
- * ESP32 pressed into the bread board.
- * HTU21D pressed into the breadboard.
- * Power supply pressed into the (+) and (-) of the bread board. Note: If the power supply if connected on the "bottom" of the bread board, the polarity marked on the bread board will be incorrect.
- * If using the power supply to power the project:
- *   Jumper wire from (+) on the breadboard to the pin labeled VIN on the ESP32.
- *   Jumper wire from (-) on the breadboard to the pin labeled GND on the ESP32.
- * Jumper wire from the pin labeled 3V3 to "+" on the HTU sensor.
- * Jumper wire from the pin lebeled GND to "-" on the HTU sensor.
- * Jumper wire from the pin labeled D21(SDA) on ESP to DA on the HTU sensor.
- * Jumper wire from the pin labeled D22(SCL) on ESP to CL on the HTU sensor.
- * If using an LED to show when MQTT is connected:
- *   The long side of the LED goes to GPIO 5 of the ESP32.
- *   Connect the short side of the LED to one leg of the 1K Ohm resistor (both connected to the same row in the breadboard).
- *   Connect the other leg of the resistor to ground(or "-" of the power supply).
+/***************************************************************************************************
+* See the README for instructions describing how to set up and run this project.
 ***************************************************************************************************/
 #include <WiFi.h>
 #include <PubSubClient.h>//For sending data to MQTT Server
